@@ -9,6 +9,7 @@ import org.cyclops.integrateddynamics.api.evaluate.variable.IValue;
 import org.cyclops.integrateddynamics.api.evaluate.variable.IValueType;
 import org.cyclops.integrateddynamics.api.evaluate.variable.IValueTypeListProxy;
 import org.cyclops.integrateddynamics.api.evaluate.variable.IValueTypeListProxyFactoryTypeRegistry;
+import org.cyclops.integrateddynamics.core.network.Network;
 
 /**
  * A concatenated list.
@@ -18,19 +19,30 @@ import org.cyclops.integrateddynamics.api.evaluate.variable.IValueTypeListProxyF
 public class ValueTypeListProxyConcat<T extends IValueType<V>, V extends IValue> extends ValueTypeListProxyBase<T, V> {
 
     private final IValueTypeListProxy<T, V>[] lists;
+    private static final int INVALID_LEN = -1;
+    private int cachedLength;
 
     public ValueTypeListProxyConcat(IValueTypeListProxy<T, V>... lists) {
         super(ValueTypeListProxyFactories.CONCAT.getName(), lists[0].getValueType());
         this.lists = lists;
+        this.cachedLength = INVALID_LEN;
+        Network.hackyToReset.add(this);
+    }
+
+    public void hackyReset() {
+        this.cachedLength = INVALID_LEN;
     }
 
     @Override
     public int getLength() throws EvaluationException {
-        int length = 0;
-        for (IValueTypeListProxy<T, V> list : lists) {
-            length += list.getLength();
+        if (cachedLength == INVALID_LEN) {
+            int length = 0;
+            for (IValueTypeListProxy<T, V> list : lists) {
+                length += list.getLength();
+            }
+            cachedLength = length;
         }
-        return length;
+        return cachedLength;
     }
 
     @Override

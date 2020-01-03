@@ -30,6 +30,7 @@ import org.cyclops.integrateddynamics.api.path.ISidedPathElement;
 import org.cyclops.integrateddynamics.capability.network.NetworkCarrierConfig;
 import org.cyclops.integrateddynamics.capability.networkelementprovider.NetworkElementProviderConfig;
 import org.cyclops.integrateddynamics.capability.path.SidedPathElement;
+import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeListProxyConcat;
 import org.cyclops.integrateddynamics.core.network.diagnostics.NetworkDiagnostics;
 import org.cyclops.integrateddynamics.core.network.event.NetworkElementAddEvent;
 import org.cyclops.integrateddynamics.core.network.event.NetworkElementRemoveEvent;
@@ -38,12 +39,7 @@ import org.cyclops.integrateddynamics.core.path.Cluster;
 import org.cyclops.integrateddynamics.core.path.PathFinder;
 import org.cyclops.integrateddynamics.core.persist.world.NetworkWorldStorage;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * A network instance that can hold a set of {@link INetworkElement}s.
@@ -51,6 +47,7 @@ import java.util.TreeSet;
  * @author rubensworks
  */
 public class Network implements INetwork {
+    public static List<ValueTypeListProxyConcat> hackyToReset = new ArrayList<>();
 
     private Cluster baseCluster;
 
@@ -387,6 +384,10 @@ public class Network implements INetwork {
             NetworkWorldStorage.getInstance(IntegratedDynamics._instance).removeInvalidatedNetwork(this);
         } else {
             onUpdate();
+            // invalidate the length cache for all concatenated lists.
+            for (ValueTypeListProxyConcat concatList : hackyToReset) {
+                concatList.hackyReset();
+            }
 
             // Update updateable network elements
             boolean isBeingDiagnozed = NetworkDiagnostics.getInstance().isBeingDiagnozed();
