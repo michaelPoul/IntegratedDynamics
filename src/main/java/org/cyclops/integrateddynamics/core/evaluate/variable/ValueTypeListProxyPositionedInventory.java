@@ -6,6 +6,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
+import org.cyclops.integrateddynamics.core.network.Network;
 
 import java.util.Iterator;
 
@@ -14,12 +15,22 @@ import java.util.Iterator;
  */
 public class ValueTypeListProxyPositionedInventory extends ValueTypeListProxyPositioned<ValueObjectTypeItemStack, ValueObjectTypeItemStack.ValueItemStack> implements INBTProvider {
 
+    private IItemHandler cachedInv = null;
+
     public ValueTypeListProxyPositionedInventory(DimPos pos, EnumFacing side) {
         super(ValueTypeListProxyFactories.POSITIONED_INVENTORY.getName(), ValueTypes.OBJECT_ITEMSTACK, pos, side);
+        Network.hackyToReset2.add(this);
+    }
+
+    public void hackyReset() {
+        this.cachedInv = null;
     }
 
     protected IItemHandler getInventory() {
-        return TileHelpers.getCapability(getPos(), getSide(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        if (cachedInv == null) {
+            cachedInv = TileHelpers.getCapability(getPos(), getSide(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        }
+        return cachedInv;
     }
 
     @Override

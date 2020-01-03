@@ -31,6 +31,7 @@ import org.cyclops.integrateddynamics.capability.network.NetworkCarrierConfig;
 import org.cyclops.integrateddynamics.capability.networkelementprovider.NetworkElementProviderConfig;
 import org.cyclops.integrateddynamics.capability.path.SidedPathElement;
 import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeListProxyConcat;
+import org.cyclops.integrateddynamics.core.evaluate.variable.ValueTypeListProxyPositionedInventory;
 import org.cyclops.integrateddynamics.core.network.diagnostics.NetworkDiagnostics;
 import org.cyclops.integrateddynamics.core.network.event.NetworkElementAddEvent;
 import org.cyclops.integrateddynamics.core.network.event.NetworkElementRemoveEvent;
@@ -48,6 +49,7 @@ import java.util.*;
  */
 public class Network implements INetwork {
     public static List<ValueTypeListProxyConcat> hackyToReset = new ArrayList<>();
+    public static List<ValueTypeListProxyPositionedInventory> hackyToReset2 = new ArrayList<>();
 
     private Cluster baseCluster;
 
@@ -387,6 +389,10 @@ public class Network implements INetwork {
             // invalidate the length cache for all concatenated lists.
             for (ValueTypeListProxyConcat concatList : hackyToReset) {
                 concatList.hackyReset();
+            }
+            // invalidate the inv cache for all ValueTypeListProxyPositionedInventory
+            for (ValueTypeListProxyPositionedInventory inv : hackyToReset2) {
+                inv.hackyReset();
             }
 
             // Update updateable network elements
