@@ -48,9 +48,6 @@ import java.util.*;
  * @author rubensworks
  */
 public class Network implements INetwork {
-    public static List<ValueTypeListProxyConcat> hackyToReset = new ArrayList<>();
-    public static List<ValueTypeListProxyPositionedInventory> hackyToReset2 = new ArrayList<>();
-
     private Cluster baseCluster;
 
     private final INetworkEventBus eventBus = new NetworkEventBus();
@@ -386,14 +383,6 @@ public class Network implements INetwork {
             NetworkWorldStorage.getInstance(IntegratedDynamics._instance).removeInvalidatedNetwork(this);
         } else {
             onUpdate();
-            // invalidate the length cache for all concatenated lists.
-            for (ValueTypeListProxyConcat concatList : hackyToReset) {
-                concatList.hackyReset();
-            }
-            // invalidate the inv cache for all ValueTypeListProxyPositionedInventory
-            for (ValueTypeListProxyPositionedInventory inv : hackyToReset2) {
-                inv.hackyReset();
-            }
 
             // Update updateable network elements
             boolean isBeingDiagnozed = NetworkDiagnostics.getInstance().isBeingDiagnozed();

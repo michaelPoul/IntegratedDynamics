@@ -26,11 +26,6 @@ public class ValueTypeListProxyConcat<T extends IValueType<V>, V extends IValue>
         super(ValueTypeListProxyFactories.CONCAT.getName(), lists[0].getValueType());
         this.lists = lists;
         this.cachedLength = INVALID_LEN;
-        Network.hackyToReset.add(this);
-    }
-
-    public void hackyReset() {
-        this.cachedLength = INVALID_LEN;
     }
 
     @Override

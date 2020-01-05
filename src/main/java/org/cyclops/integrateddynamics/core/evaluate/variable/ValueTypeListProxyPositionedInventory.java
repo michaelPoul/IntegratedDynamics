@@ -15,14 +15,10 @@ import java.util.Iterator;
  */
 public class ValueTypeListProxyPositionedInventory extends ValueTypeListProxyPositioned<ValueObjectTypeItemStack, ValueObjectTypeItemStack.ValueItemStack> implements INBTProvider {
 
-    private IItemHandler cachedInv = null;
+    private IItemHandler cachedInv;
 
     public ValueTypeListProxyPositionedInventory(DimPos pos, EnumFacing side) {
         super(ValueTypeListProxyFactories.POSITIONED_INVENTORY.getName(), ValueTypes.OBJECT_ITEMSTACK, pos, side);
-        Network.hackyToReset2.add(this);
-    }
-
-    public void hackyReset() {
         this.cachedInv = null;
     }
 
